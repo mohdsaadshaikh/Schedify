@@ -16,15 +16,15 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import PasswordInput from "@/components/ui/password-input";
-import { loginSchema } from "@/schemas/auth.schema";
-import { login } from "@/lib/actions/auth.action";
 import { toast } from "sonner";
 import { DEFAULT_REDIRECT } from "@/lib/routes";
+import { registerSchema } from "@/schemas/auth.schema";
+import { register } from "@/lib/actions/auth.action";
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
   const form = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    resolver: zodResolver(registerSchema),
+    defaultValues: { name: "", email: "", password: "" },
   });
 
   const router = useRouter();
@@ -32,31 +32,31 @@ export const LoginForm = () => {
 
   const onSubmit = (values) => {
     startTransition(() => {
-      login(values)
+      register(values)
         .then((res) => {
           if (res?.success) {
-            toast.success("Logged in successfully");
+            toast.success("Accout successfully created");
             router.push(DEFAULT_REDIRECT);
           } else if (res?.error) {
             toast.error(res.error);
           }
         })
         .catch((error) => {
-          toast.error("Failed to login try again later");
+          toast.error("Failed to registering try again later");
         });
     });
   };
 
   return (
     <FormWrapper
-      headerLabel="Login"
+      headerLabel="Create your account"
       headerContent="to continue to Schedify"
       backButtonLabel={
         <>
-          Don’t have an account?<span className="text-[#157759]">Sign up</span>
+          Already have an account?<span className="text-[#157759]">Login</span>
         </>
       }
-      backButtonLink="/register"
+      backButtonLink="/login"
       providers={true}
     >
       <Form {...form}>
@@ -67,6 +67,19 @@ export const LoginForm = () => {
           <div className="space-y-4">
             <FormField
               control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="name" placeholder="John Doe" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -75,7 +88,7 @@ export const LoginForm = () => {
                     <Input
                       {...field}
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="johndoe@gmail.com"
                     />
                   </FormControl>
                   <FormMessage />
@@ -91,14 +104,7 @@ export const LoginForm = () => {
                   <FormControl>
                     <PasswordInput {...field} />
                   </FormControl>
-                  <Button
-                    size="sm"
-                    variant="link"
-                    className="p-0 text-[13px] text-[#1DA1F2] w-full flex justify-end "
-                    asChild
-                  >
-                    <Link href="/forgot-password">Forgot Password?</Link>
-                  </Button>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -108,7 +114,7 @@ export const LoginForm = () => {
             type="submit"
             className="w-full btn-gradient text-white font-semibold "
           >
-            {isPending ? "Logging..." : "Login"}
+            {isPending ? "Registering..." : "Register"}
           </Button>
         </form>
       </Form>

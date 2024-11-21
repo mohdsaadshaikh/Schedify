@@ -12,7 +12,8 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { inter } from "@/lib/fonts";
 import { signIn } from "next-auth/react";
-import { DEFAULT_LOGIN_REDIRECT } from "@/lib/routes";
+import { DEFAULT_REDIRECT } from "@/lib/routes";
+import { toast } from "sonner";
 
 export const FormWrapper = ({
   headerLabel,
@@ -24,8 +25,14 @@ export const FormWrapper = ({
 }) => {
   const providerHandler = (provider) => {
     signIn(provider, {
-      callbackUrl: DEFAULT_LOGIN_REDIRECT,
-    });
+      callbackUrl: DEFAULT_REDIRECT,
+    })
+      .then(() => {
+        toast.success("Login successfull");
+      })
+      .catch(() => {
+        toast.error("Failed to login");
+      });
   };
   return (
     <Card
