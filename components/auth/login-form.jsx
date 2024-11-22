@@ -37,6 +37,8 @@ export const LoginForm = () => {
           if (res?.success) {
             toast.success("Logged in successfully");
             router.push(DEFAULT_REDIRECT);
+          } else if (res?.message) {
+            toast.info(res.message);
           } else if (res?.error) {
             toast.error(res.error);
           }
@@ -106,6 +108,7 @@ export const LoginForm = () => {
           </div>
           <Button
             type="submit"
+            disabled={isPending}
             className="w-full btn-gradient text-white font-semibold "
           >
             {isPending ? "Logging..." : "Login"}
