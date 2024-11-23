@@ -1,5 +1,8 @@
 import crypto from "crypto";
-import { getVerificationTokenByEmail } from "@/services/auth";
+import {
+  getVerificationTokenByEmail,
+  getPasswordResetTokenByEmail,
+} from "@/services/auth";
 
 export const generateVerificationToken = async (email) => {
   const token = crypto.randomBytes(32).toString("hex");
@@ -18,4 +21,22 @@ export const generateVerificationToken = async (email) => {
   });
 
   return verificationToken;
+};
+
+export const generatePasswordResetToken = async (email) => {
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(new Date().getTime() + 60 * 60 * 1000);
+
+  const existingToken = await getPasswordResetTokenByEmail(email);
+  if (existingToken) {
+    await prisma.passwordResetToken.delete({
+      where: { id: existingToken.id },
+    });
+  }
+
+  const passwordResetToken = await prisma.passwordResetToken.create({
+    data: { email, token, expiresAt },
+  });
+
+  return passwordResetToken;
 };

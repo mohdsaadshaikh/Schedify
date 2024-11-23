@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { FormWrapper } from "@/components/auth/form-wrapper";
 import { Button } from "@/components/ui/button";
@@ -18,46 +18,52 @@ import Link from "next/link";
 import PasswordInput from "@/components/ui/password-input";
 import { toast } from "sonner";
 import { DEFAULT_REDIRECT } from "@/lib/routes";
-import { registerSchema } from "@/schemas/auth.schema";
-import { register } from "@/lib/actions/auth.action";
+import { FaArrowLeft } from "react-icons/fa";
+import { resetPasswordSchema } from "@/schemas/auth.schema";
+import { resetPassword } from "@/lib/actions/auth.action";
 
-export const RegisterForm = () => {
+export const ResetPasswordForm = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+
   const form = useForm({
-    resolver: zodResolver(registerSchema),
-    defaultValues: { name: "", email: "", password: "" },
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: { password: "", confirmPassword: "" },
   });
 
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const onSubmit = (values) => {
     startTransition(() => {
-      register(values)
-        .then((res) => {
-          if (res?.success) {
-            toast.success("Accout successfully created");
-            router.push(DEFAULT_REDIRECT);
-          } else if (res?.error) {
-            toast.error(res.error);
+      resetPassword(values, token)
+        .then((response) => {
+          if (response?.success) {
+            toast.success(response.success);
+            router.push("/login");
+          } else if (response?.error) {
+            toast.error(response.error);
           }
         })
-        .catch((error) => {
-          toast.error("Failed to registering try again later");
+        .catch(() => {
+          toast.error("An unexpected error accured");
         });
     });
   };
 
   return (
     <FormWrapper
-      headerLabel="Create your account"
-      headerContent="to continue to Schedify"
+      headerLabel="Set new password"
+      headerContent="New password must be different"
       backButtonLabel={
         <>
-          Already have an account?<span className="text-[#157759]">Login</span>
+          <span className="flex gap-3 items-center">
+            <FaArrowLeft />
+            Back to Login
+          </span>
         </>
       }
       backButtonLink="/login"
-      providers={true}
     >
       <Form {...form}>
         <form
@@ -67,36 +73,6 @@ export const RegisterForm = () => {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="name" placeholder="John Doe" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="johndoe@gmail.com"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
@@ -104,7 +80,19 @@ export const RegisterForm = () => {
                   <FormControl>
                     <PasswordInput {...field} />
                   </FormControl>
-
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -112,9 +100,10 @@ export const RegisterForm = () => {
           </div>
           <Button
             type="submit"
+            disabled={isPending}
             className="w-full btn-gradient text-white font-semibold "
           >
-            {isPending ? "Registering..." : "Register"}
+            {isPending ? "Reseting..." : "Reset"}
           </Button>
         </form>
       </Form>

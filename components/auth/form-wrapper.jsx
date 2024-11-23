@@ -28,10 +28,11 @@ export const FormWrapper = ({
       callbackUrl: DEFAULT_REDIRECT,
     })
       .then(() => {
-        toast.success("Login successfull");
+        if (provider === "github") toast.success("Continuing to github");
+        else toast.success("Continuing to Google");
       })
       .catch(() => {
-        toast.error("Failed to login");
+        toast.error("An unexpected error occurred");
       });
   };
   return (
@@ -40,9 +41,9 @@ export const FormWrapper = ({
     >
       <CardHeader>
         <div className="w-full flex justify-between items-center">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2">
             <h2 className="text-2xl font-bold">{headerLabel}</h2>
-            <p className="text-gray-600 text-sm">{headerContent}</p>
+            <p className="text-gray-600 text-sm w-64">{headerContent}</p>
           </div>
           <Image alt="Schedify" src="/assets/logo.png" width="50" height="50" />
         </div>

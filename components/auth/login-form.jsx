@@ -93,6 +93,7 @@ export const LoginForm = () => {
                   <FormControl>
                     <PasswordInput {...field} />
                   </FormControl>
+                  <FormMessage />
                   <Button
                     size="sm"
                     variant="link"
@@ -101,7 +102,6 @@ export const LoginForm = () => {
                   >
                     <Link href="/forgot-password">Forgot Password?</Link>
                   </Button>
-                  <FormMessage />
                 </FormItem>
               )}
             />
