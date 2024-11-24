@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import providers from "./authProviders";
-import { getUserById } from "./services/auth";
+import { getTwoFactorConfirmationByUserId, getUserById } from "./services/auth";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
@@ -12,7 +12,36 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const existingUser = await getUserById(user.id);
       if (!existingUser || !existingUser.emailVerified) return false;
 
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+          existingUser.id
+        );
+        console.log("ambani madama", twoFactorConfirmation);
+        if (!twoFactorConfirmation) return false;
+
+        await prisma.twoFactorConfirmation.delete({
+          where: { userId: existingUser.id },
+        });
+      }
+
       return true;
+    },
+    async session({ session, token }) {
+      if (token.sub && session.user) session.user.id = token.sub;
+      if (session.user)
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+
+      return session;
+    },
+    async jwt({ token }) {
+      if (!token.sub) return token;
+
+      const existingUser = await getUserById(token.sub);
+
+      if (!existingUser) return token;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+
+      return token;
     },
   },
   events: {

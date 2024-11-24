@@ -13,6 +13,7 @@ export const loginSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 characters long",
   }),
+  code: z.optional(z.string()),
 });
 
 export const forgotPasswordSchema = z.object({
