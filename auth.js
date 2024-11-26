@@ -16,7 +16,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
           existingUser.id
         );
-        console.log("ambani madama", twoFactorConfirmation);
+
         if (!twoFactorConfirmation) return false;
 
         await prisma.twoFactorConfirmation.delete({
@@ -28,8 +28,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async session({ session, token }) {
       if (token.sub && session.user) session.user.id = token.sub;
-      if (session.user)
+      if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+        session.user.password = token.password;
+      }
 
       return session;
     },
@@ -40,6 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       if (!existingUser) return token;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+      token.password = existingUser.password;
 
       return token;
     },
