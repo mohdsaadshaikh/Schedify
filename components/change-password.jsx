@@ -16,13 +16,15 @@ import { useTransition } from "react";
 import { updatePasswordSchema } from "@/schemas/auth.schema";
 import { toast } from "sonner";
 import { updatePassword } from "@/lib/actions/user.action";
+import { useRouter } from "next/navigation";
 
 export const ChangePassword = () => {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(updatePasswordSchema),
     defaultValues: {
-      currentPassword: "",
-      newPassword: "",
+      currentPassword: undefined,
+      newPassword: undefined,
     },
   });
 
@@ -81,11 +83,19 @@ export const ChangePassword = () => {
                 </FormItem>
               )}
             />
-            <div className="flex justify-end gap-2">
-              <Button disabled={isPending} variant="outline" className="w-28">
-                <Link href="/">Cancel</Link>
+            <div className="flex justify-end items-center gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+              >
+                Cancel
               </Button>
-              <Button type="submit" disabled={isPending} className="w-28">
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="w-28 btn-gradient "
+              >
                 {isPending ? "Changing..." : "Change"}
               </Button>
             </div>

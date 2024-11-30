@@ -2,9 +2,13 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import providers from "./authProviders";
-import { getTwoFactorConfirmationByUserId, getUserById } from "./services/auth";
+import {
+  getAccountById,
+  getTwoFactorConfirmationByUserId,
+  getUserById,
+} from "./services/auth";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut, update } = NextAuth({
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider !== "credentials") return true;
@@ -31,6 +35,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
         session.user.password = token.password;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = token?.image;
+        session.user.isOAuth = token.isOAuth;
       }
 
       return session;
@@ -41,8 +49,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const existingUser = await getUserById(token.sub);
 
       if (!existingUser) return token;
+
+      const existingAccount = await getAccountById(existingUser.id);
+
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       token.password = existingUser.password;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.image = existingUser?.image;
+      token.isOAuth = !!existingAccount;
 
       return token;
     },

@@ -100,3 +100,14 @@ export const getTwoFactorConfirmationByUserId = async (userId) => {
     return null;
   }
 };
+
+export const getAccountById = async (userId) => {
+  try {
+    const account = await prisma.account.findFirst({
+      where: { userId },
+    });
+    return account;
+  } catch (error) {
+    return null;
+  }
+};

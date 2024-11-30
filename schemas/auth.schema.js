@@ -38,6 +38,5 @@ export const updatePasswordSchema = z.object({
 export const editProfileSchema = z.object({
   name: z.string().optional(),
   email: z.string().email().optional(),
-  password: z.string().optional(),
   isTwoFactorEnabled: z.boolean().optional(),
 });
