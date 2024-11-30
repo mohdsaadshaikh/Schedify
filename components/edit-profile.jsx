@@ -20,7 +20,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { CldUploadWidget } from "next-cloudinary";
-import { deleteImage, uploadImage } from "@/lib/actions/user.action";
+import {
+  deleteImage,
+  editProfile,
+  uploadImage,
+} from "@/lib/actions/user.action";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 
@@ -66,6 +70,22 @@ export const EditProfile = () => {
         })
         .catch((err) => {
           toast.error("Error uploading image");
+        });
+    });
+  };
+
+  const handleEditProfile = (values) => {
+    startTransition(() => {
+      editProfile(values)
+        .then((response) => {
+          if (response?.success) {
+            toast.success(response.success);
+          } else if (response?.error) {
+            toast.error(response.error);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
         });
     });
   };
@@ -124,7 +144,10 @@ export const EditProfile = () => {
         </p>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit()} className="space-y-4 w-full mt-8">
+        <form
+          onSubmit={form.handleSubmit(handleEditProfile)}
+          className="space-y-4 w-full mt-8"
+        >
           <div className="space-y-6">
             <FormField
               control={form.control}
@@ -181,7 +204,12 @@ export const EditProfile = () => {
               />
             )}
             <div className="flex justify-end gap-2 pb-4">
-              <Button disabled={isPending} variant="outline" className="w-28">
+              <Button
+                disabled={isPending}
+                variant="outline"
+                type="button"
+                className="w-28"
+              >
                 <Link href="/">Cancel</Link>
               </Button>
               <Button
