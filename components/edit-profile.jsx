@@ -26,7 +26,6 @@ import {
   uploadImage,
 } from "@/lib/actions/user.action";
 import { toast } from "sonner";
-import { useSession } from "next-auth/react";
 
 export const EditProfile = () => {
   const user = useCurrentUser();
@@ -104,7 +103,7 @@ export const EditProfile = () => {
           <Avatar className="w-36 h-36" fallback={<AvatarFallback />}>
             <AvatarImage
               className="w-36 h-36"
-              src={user?.image || null}
+              src={user?.image}
               alt="User avatar"
             />
             <AvatarFallback className="bg-[#53ab8b]">
@@ -217,7 +216,7 @@ export const EditProfile = () => {
                 disabled={isPending}
                 className="w-28 btn-gradient"
               >
-                {isPending ? "Editing..." : "Edit"}
+                Edit
               </Button>
             </div>
           </div>

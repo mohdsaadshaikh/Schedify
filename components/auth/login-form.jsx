@@ -26,8 +26,15 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlErr =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email Already in use by different provider"
+      : "";
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -74,6 +81,13 @@ export const LoginForm = () => {
       backButtonLink="/register"
       providers={!show2fa}
     >
+      {urlErr && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{urlErr}</AlertDescription>
+        </Alert>
+      )}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
