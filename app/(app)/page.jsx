@@ -1,8 +1,8 @@
 import React from "react";
-import { Home } from "./home";
+import { WeekDaysOverview } from "@/components/task-ui/week-days-overview";
 
 const HomePage = () => {
-  return <Home />;
+  return <WeekDaysOverview />;
 };
 
 export default HomePage;
