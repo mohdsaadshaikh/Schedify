@@ -9,7 +9,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
 import { Ban } from "lucide-react";
 
 const page = async () => {
@@ -22,7 +21,7 @@ const page = async () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="relative left-10 cursor-pointer">
+                <div className="relative left-10 cursor-not-allowed">
                   <TabsTrigger
                     value="edit-password"
                     className="pointer-events-none"

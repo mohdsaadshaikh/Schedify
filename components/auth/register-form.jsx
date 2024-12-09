@@ -1,7 +1,4 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
 import { FormWrapper } from "@/components/auth/form-wrapper";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +10,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import PasswordInput from "@/components/ui/password-input";
-import { toast } from "sonner";
+import { register } from "@/lib/actions/auth.action";
 import { DEFAULT_REDIRECT } from "@/lib/routes";
 import { registerSchema } from "@/schemas/auth.schema";
-import { register } from "@/lib/actions/auth.action";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export const RegisterForm = () => {
   const form = useForm({

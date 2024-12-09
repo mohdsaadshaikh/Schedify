@@ -1,8 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
-import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import ColorPicker from "@/components/ui/color-picker";
 import {
   Form,
   FormControl,
@@ -19,44 +17,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import { createTask } from "@/lib/actions/task.action";
+import { outfit } from "@/lib/fonts";
 import { createTaskSchema } from "@/schemas/task.schema";
-import ColorPicker from "@/components/ui/color-picker";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Priority, Recurrence } from "@prisma/client";
+import { useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-export const CreateTask = () => {
+export const CreateTask = ({ selectedDate }) => {
+  console.log(Recurrence.NONE);
   const form = useForm({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
       title: "",
       description: "",
-      category: "",
       startTime: "",
       endTime: "",
-      isRepeating: false,
       recurrence: "",
       color: "",
       priority: "",
-      completed: false,
+      date: new Date(selectedDate),
     },
   });
 
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const onSubmit = (values) => {
+  const HandleCreateTask = (values) => {
+    console.log("Calling server ", values);
     startTransition(() => {
-      // Mock API Request (Replace this with actual API logic)
-      fakeApiCall(values)
-        .then(() => {
-          toast.success("Task created successfully!");
-          router.push("/tasks"); // Navigate to tasks page
+      createTask({
+        ...values,
+        date: new Date(selectedDate),
+      })
+        .then((res) => {
+          console.log("Server response:", res);
+          if (res?.success) {
+            toast.success(res.success);
+          } else if (res?.error) {
+            console.log(res.error);
+            toast.error(res.error);
+          }
         })
         .catch((error) => {
+          console.error("Error in createTask:", error);
           toast.error("Failed to create task.");
-          console.error(error);
         });
     });
   };
@@ -64,11 +71,9 @@ export const CreateTask = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-3 "
-        autoComplete="off"
+        onSubmit={form.handleSubmit(HandleCreateTask)}
+        className={`${outfit.className} space-y-4`}
       >
-        {/* Title */}
         <FormField
           control={form.control}
           name="title"
@@ -83,7 +88,6 @@ export const CreateTask = () => {
           )}
         />
 
-        {/* Description */}
         <FormField
           control={form.control}
           name="description"
@@ -98,101 +102,105 @@ export const CreateTask = () => {
           )}
         />
 
-        {/* Category */}
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter task category" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Start Time */}
-        <FormField
-          control={form.control}
-          name="startTime"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Start Time</FormLabel>
-              <FormControl>
-                <Input type="time" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* End Time */}
-        <FormField
-          control={form.control}
-          name="endTime"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>End Time</FormLabel>
-              <FormControl>
-                <Input type="datetime-local" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Is Repeating */}
-        <FormField
-          control={form.control}
-          name="isRepeating"
-          render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={(checked) => field.onChange(checked)}
-              />
-              <FormLabel>Is Repeating</FormLabel>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Recurrence */}
         <FormField
           control={form.control}
           name="recurrence"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Recurrence</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Recurrence" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="daily">Daily</SelectItem>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                  <SelectItem value="yearly">Yearly</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Recurrence" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(Recurrence).map((recurrence, i) => (
+                      <SelectItem key={i} value={recurrence}>
+                        {recurrence}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+
               <FormMessage />
             </FormItem>
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="priority"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Priority</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(Priority).map((priority, i) => (
+                      <SelectItem key={i} value={priority}>
+                        {priority}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex gap-3 w-full">
+          <FormField
+            control={form.control}
+            name="startTime"
+            render={({ field }) => (
+              <FormItem className="w-1/2">
+                <FormLabel>Start Time</FormLabel>
+                <FormControl>
+                  <Input type="time" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="endTime"
+            render={({ field }) => (
+              <FormItem className="w-1/2">
+                <FormLabel>End Time</FormLabel>
+                <FormControl>
+                  <Input type="time" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <Popover>
           <PopoverTrigger asChild>
-            <button className="flex items-center space-x-2 px-4 py-2 border rounded-md">
-              <span>Select Color</span>
+            <div className="flex justify-between items-center rounded-lg border border-input py-3 px-4 shadow-sm shadow-black/5 ">
+              <p>Select color</p>
               <span
-                className="w-4 h-4 rounded-full border"
+                className="w-8 h-8 rounded-full block border-2 cursor-pointer"
                 style={{
-                  backgroundColor: form.watch("color") || "#000000", // Fallback for undefined
+                  backgroundColor: form.watch("color") || "#808080",
                 }}
               />
-            </button>
+            </div>
           </PopoverTrigger>
           <PopoverContent>
             <FormField
@@ -200,23 +208,14 @@ export const CreateTask = () => {
               name="color"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Color</FormLabel>
                   <FormControl>
-                    {/* Replace ColorPicker with custom implementation */}
-                    <div className="grid grid-cols-5 gap-2">
-                      {colors.map((color, index) => (
-                        <button
-                          key={index}
-                          className={`w-8 h-8 rounded-full transition-all ${
-                            field.value === color
-                              ? "ring-2 ring-primary"
-                              : "hover:ring-2 hover:ring-muted"
-                          }`}
-                          style={{ backgroundColor: color }}
-                          onClick={() => field.onChange(color)} // Update the form value
-                        />
-                      ))}
-                    </div>
+                    <ColorPicker
+                      {...field}
+                      color={field.value}
+                      onChange={(selectedColor) =>
+                        field.onChange(selectedColor)
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -225,46 +224,11 @@ export const CreateTask = () => {
           </PopoverContent>
         </Popover>
 
-        {/* Priority */}
-        <FormField
-          control={form.control}
-          name="priority"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Priority</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Completed */}
-        <FormField
-          control={form.control}
-          name="completed"
-          render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={(checked) => field.onChange(checked)}
-              />
-              <FormLabel>Completed</FormLabel>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Submit Button */}
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="w-full btn-gradient"
+        >
           {isPending ? "Creating Task..." : "Create Task"}
         </Button>
       </form>
@@ -272,11 +236,10 @@ export const CreateTask = () => {
   );
 };
 
-// Mock API function
-const fakeApiCall = (values) =>
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (Math.random() > 0.2) resolve(values);
-      else reject(new Error("API Error"));
-    }, 2000);
-  });
+// const fakeApiCall = (values) =>
+//   new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       if (Math.random() > 0.2) resolve(values);
+//       else reject(new Error("API Error"));
+//     }, 2000);
+//   });

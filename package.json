@@ -44,6 +44,7 @@
     "tailwind-merge": "^2.5.4",
     "tailwind-scrollbar": "^3.1.0",
     "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-motion": "^0.4.3-beta",
     "zod": "^3.23.8"
   },
   "devDependencies": {

@@ -87,26 +87,26 @@ model TwoFactorConfirmation {
 }
 
 model Task {
-  id          String      @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
   description String?
-  category    String
   startTime   DateTime
   endTime     DateTime
-  isRepeating Boolean     @default(false) // Task repetition flag
-  recurrence  Recurrence? // e.g., "daily", "weekly", "monthly"
-  color       String? // Hex color for category
-  priority    Priority // e.g., "High", "Medium", "Low"
-  completed   Boolean     @default(false) // Task completion status
+  date        DateTime
+  recurrence  Recurrence
+  color       String?
+  priority    Priority
+  completed   Boolean    @default(false)
   userId      String
-  user        User        @relation(fields: [userId], references: [id])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  user        User       @relation(fields: [userId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@index([userId, startTime, endTime])
 }
 
 enum Recurrence {
+  NONE
   DAILY
   WEEKLY
   MONTHLY
