@@ -64,6 +64,13 @@ module.exports = {
       animation: {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
+      backgroundSize: {
+        "size-200": "200% 200%",
+      },
+      backgroundPosition: {
+        "pos-0": "0% 0%",
+        "pos-100": "100% 100%",
+      },
     },
   },
   plugins: [

@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { CreateTask } from "./create-task";
+import { TasksList } from "./task-list";
 
 export const WeekDaysOverview = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -72,32 +73,35 @@ export const WeekDaysOverview = () => {
       </header>
 
       <div className="grid lg:grid-cols-7 md:grid-cols-1 sm:grid-cols-1 gap-6">
-        {formattedWeekDays.map((day, index) => (
-          <div key={index} onClick={() => handleDayClick(day)}>
-            <div
-              className={`${
-                today === day.fullDate &&
-                "text-[#53ab8b] border-b-4 border-[#53ab8b]"
-              } py-2 min-w-[120px] border-b-2 flex justify-between cursor-pointer`}
-            >
-              <div className="text-xl font-semibold">{day.date}</div>
-              <div className="text-gray-500 text-lg">{day.dayName}</div>
+        {formattedWeekDays.map((day, index) => {
+          return (
+            <div key={index} onClick={() => handleDayClick(day)}>
+              <div
+                className={`${
+                  today === day.fullDate &&
+                  "text-[#53ab8b] border-b-4 border-[#53ab8b]"
+                } py-2 min-w-[120px] border-b-2 flex justify-between cursor-pointer`}
+              >
+                <div className="text-xl font-semibold">{day.date}</div>
+                <div className="text-gray-500 text-lg">{day.dayName}</div>
+              </div>
+              <TasksList date={day.fullDate} />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full mt-4">
+                    Add Task
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Create Task</DialogTitle>
+                  </DialogHeader>
+                  <CreateTask selectedDate={selectedDate} />
+                </DialogContent>
+              </Dialog>
             </div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full mt-2">
-                  Add Task
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Create Task</DialogTitle>
-                </DialogHeader>
-                <CreateTask selectedDate={selectedDate} />
-              </DialogContent>
-            </Dialog>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

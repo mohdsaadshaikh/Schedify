@@ -92,7 +92,7 @@ model Task {
   description String?
   startTime   DateTime
   endTime     DateTime
-  date        DateTime
+  date        DateTime   @db.Date
   recurrence  Recurrence
   color       String?
   priority    Priority
