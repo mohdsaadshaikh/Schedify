@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { editTask } from "@/lib/actions/task.action";
+import { deleteTask, editTask } from "@/lib/actions/task.action";
 import { outfit } from "@/lib/fonts";
 import { editTaskSchema } from "@/schemas/task.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +30,7 @@ import { CloseDialog } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-export const EditTask = ({ task }) => {
+export const EditDeleteTask = ({ task }) => {
   const form = useForm({
     resolver: zodResolver(editTaskSchema),
     defaultValues: {
@@ -67,17 +67,33 @@ export const EditTask = ({ task }) => {
         id: task.id,
       })
         .then((res) => {
-          console.log("Server response:", res);
           if (res?.success) {
             toast.success(res.success);
+          } else if (res?.error) {
+            toast.error(res.error);
+          }
+        })
+        .catch((error) => {
+          toast.error("Failed to create task.");
+        });
+    });
+  };
+
+  const handleDeleteTask = () => {
+    startTransition(() => {
+      deleteTask(task.id)
+        .then((res) => {
+          if (res?.success) {
+            toast.success(res.success);
+            window.location.reload();
           } else if (res?.error) {
             console.log(res.error);
             toast.error(res.error);
           }
         })
         .catch((error) => {
-          console.error("Error in createTask:", error);
-          toast.error("Failed to create task.");
+          console.error("Error in deleteTask:", error);
+          toast.error("Failed to delete task.");
         });
     });
   };
@@ -259,15 +275,23 @@ export const EditTask = ({ task }) => {
           )}
         />
 
-        <CloseDialog asChild>
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="w-full btn-gradient"
-          >
-            {isPending ? "Editing Task..." : "Edit Task"}
-          </Button>
-        </CloseDialog>
+        <div className="w-full flex justify-end gap-2">
+          <CloseDialog asChild>
+            <Button
+              type="button"
+              disabled={isPending}
+              variant="destructive"
+              onClick={() => handleDeleteTask()}
+            >
+              Delete Task
+            </Button>
+          </CloseDialog>
+          <CloseDialog asChild>
+            <Button type="submit" disabled={isPending}>
+              Edit Task
+            </Button>
+          </CloseDialog>
+        </div>
       </form>
     </Form>
   );

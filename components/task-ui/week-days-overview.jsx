@@ -80,7 +80,7 @@ export const WeekDaysOverview = () => {
                 className={`${
                   today === day.fullDate &&
                   "text-[#53ab8b] border-b-4 border-[#53ab8b]"
-                } py-2 min-w-[120px] border-b-2 flex justify-between cursor-pointer`}
+                } py-2 min-w-[120px] border-b-2 flex justify-between cursor-pointer mb-4`}
               >
                 <div className="text-xl font-semibold">{day.date}</div>
                 <div className="text-gray-500 text-lg">{day.dayName}</div>
@@ -88,7 +88,7 @@ export const WeekDaysOverview = () => {
               <TasksList date={day.fullDate} />
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="w-full mt-4">
+                  <Button variant="outline" className="w-full">
                     Add Task
                   </Button>
                 </DialogTrigger>
