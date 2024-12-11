@@ -17,41 +17,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createTask } from "@/lib/actions/task.action";
+import { editTask } from "@/lib/actions/task.action";
 import { outfit } from "@/lib/fonts";
-import { createTaskSchema } from "@/schemas/task.schema";
+import { editTaskSchema } from "@/schemas/task.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Priority, Recurrence } from "@prisma/client";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Checkbox } from "../ui/checkbox";
 import { CloseDialog } from "../ui/dialog";
+import { Label } from "../ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-export const CreateTask = ({ selectedDate }) => {
-  console.log(Recurrence.NONE);
+export const EditTask = ({ task }) => {
   const form = useForm({
-    resolver: zodResolver(createTaskSchema),
+    resolver: zodResolver(editTaskSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      startTime: "",
-      endTime: "",
-      recurrence: "",
-      color: "",
-      priority: "",
-      date: new Date(selectedDate),
+      title: task?.title || undefined,
+      description: task?.description || undefined,
+      startTime: task?.startTime
+        ? new Date(task.startTime).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : undefined,
+      endTime: task?.endTime
+        ? new Date(task.endTime).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : undefined,
+      recurrence: task?.recurrence || undefined,
+      color: task?.color || undefined,
+      priority: task?.priority || undefined,
+      date: new Date(task?.date),
+      completed: task?.completed || false,
     },
   });
 
   const [isPending, startTransition] = useTransition();
 
-  const HandleCreateTask = (values) => {
-    console.log("Calling server ", values);
+  const HandleEditTask = (values) => {
     startTransition(() => {
-      createTask({
+      editTask({
         ...values,
-        date: new Date(selectedDate),
+        id: task.id,
       })
         .then((res) => {
           console.log("Server response:", res);
@@ -72,7 +85,7 @@ export const CreateTask = ({ selectedDate }) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(HandleCreateTask)}
+        onSubmit={form.handleSubmit(HandleEditTask)}
         className={`${outfit.className} space-y-4`}
       >
         <FormField
@@ -82,7 +95,7 @@ export const CreateTask = ({ selectedDate }) => {
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter task title" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,7 +109,7 @@ export const CreateTask = ({ selectedDate }) => {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="Enter task description" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -115,7 +128,7 @@ export const CreateTask = ({ selectedDate }) => {
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Recurrence" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.values(Recurrence).map((recurrence, i) => (
@@ -144,7 +157,7 @@ export const CreateTask = ({ selectedDate }) => {
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Priority" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.values(Priority).map((priority, i) => (
@@ -225,24 +238,37 @@ export const CreateTask = ({ selectedDate }) => {
           </PopoverContent>
         </Popover>
 
+        <FormField
+          control={form.control}
+          name="completed"
+          render={({ field }) => (
+            <FormItem className="w-1/2">
+              <FormControl>
+                <Checkbox
+                  id="completed"
+                  {...field}
+                  checked={field.value}
+                  onCheckedChange={(checked) => field.onChange(checked)}
+                />
+              </FormControl>
+              <Label className="ml-2" htmlFor="completed">
+                {task?.completed ? "Completed" : "Mark as Completed"}
+              </Label>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <CloseDialog asChild>
           <Button
             type="submit"
             disabled={isPending}
             className="w-full btn-gradient"
           >
-            {isPending ? "Creating Task..." : "Create Task"}
+            {isPending ? "Editing Task..." : "Edit Task"}
           </Button>
         </CloseDialog>
       </form>
     </Form>
   );
 };
-
-// const fakeApiCall = (values) =>
-//   new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//       if (Math.random() > 0.2) resolve(values);
-//       else reject(new Error("API Error"));
-//     }, 2000);
-//   });

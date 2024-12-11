@@ -90,8 +90,8 @@ model Task {
   id          String     @id @default(cuid())
   title       String
   description String?
-  startTime   DateTime
-  endTime     DateTime
+  startTime   DateTime   @db.Time()
+  endTime     DateTime   @db.Time()
   date        DateTime   @db.Date
   recurrence  Recurrence
   color       String?
