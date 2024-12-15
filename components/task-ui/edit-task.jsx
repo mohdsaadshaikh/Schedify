@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { deleteTask, editTask } from "@/lib/actions/task.action";
+import { editTask } from "@/lib/actions/task.action";
 import { outfit } from "@/lib/fonts";
 import { editTaskSchema } from "@/schemas/task.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,11 +26,19 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Checkbox } from "../ui/checkbox";
-import { CloseDialog } from "../ui/dialog";
+import {
+  CloseDialog,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { DeleteTask } from "./delete-task";
 
-export const EditDeleteTask = ({ task }) => {
+export const EditTask = ({ task }) => {
   const form = useForm({
     resolver: zodResolver(editTaskSchema),
     defaultValues: {
@@ -75,25 +83,6 @@ export const EditDeleteTask = ({ task }) => {
         })
         .catch((error) => {
           toast.error("Failed to create task.");
-        });
-    });
-  };
-
-  const handleDeleteTask = () => {
-    startTransition(() => {
-      deleteTask(task.id)
-        .then((res) => {
-          if (res?.success) {
-            toast.success(res.success);
-            window.location.reload();
-          } else if (res?.error) {
-            console.log(res.error);
-            toast.error(res.error);
-          }
-        })
-        .catch((error) => {
-          console.error("Error in deleteTask:", error);
-          toast.error("Failed to delete task.");
         });
     });
   };
@@ -276,16 +265,19 @@ export const EditDeleteTask = ({ task }) => {
         />
 
         <div className="w-full flex justify-end gap-2">
-          <CloseDialog asChild>
-            <Button
-              type="button"
-              disabled={isPending}
-              variant="destructive"
-              onClick={() => handleDeleteTask()}
-            >
-              Delete Task
-            </Button>
-          </CloseDialog>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button type="button" disabled={isPending} variant="destructive">
+                Delete Task
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Delete Task</DialogTitle>
+              </DialogHeader>
+              <DeleteTask taskId={task.id} />
+            </DialogContent>
+          </Dialog>
           <CloseDialog asChild>
             <Button type="submit" disabled={isPending}>
               Edit Task

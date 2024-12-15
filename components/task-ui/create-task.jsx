@@ -29,7 +29,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CloseDialog } from "../ui/dialog";
 
 export const CreateTask = ({ selectedDate }) => {
-  console.log(Recurrence.NONE);
   const form = useForm({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -47,14 +46,12 @@ export const CreateTask = ({ selectedDate }) => {
   const [isPending, startTransition] = useTransition();
 
   const HandleCreateTask = (values) => {
-    console.log("Calling server ", values);
     startTransition(() => {
       createTask({
         ...values,
         date: new Date(selectedDate),
       })
         .then((res) => {
-          console.log("Server response:", res);
           if (res?.success) {
             toast.success(res.success);
           } else if (res?.error) {
