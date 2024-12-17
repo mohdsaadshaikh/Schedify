@@ -1,0 +1,29 @@
+name: Recurring Task Cron Job
+
+on:
+  schedule:
+    - cron: "0 19 * * *" # Runs at 7 PM UTC (12 AM Pakistan Time)
+  workflow_dispatch: # Manual trigger option
+
+jobs:
+  run-cron-job:
+    runs-on: ubuntu-latest
+    env:
+      TZ: "UTC" # Server time is UTC by default
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Cron Job Script
+        run: node lib/jobs/cronForRecurrence.js
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
