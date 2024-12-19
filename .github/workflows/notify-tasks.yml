@@ -1,0 +1,29 @@
+name: Notify Tasks Cron Job
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"
+  workflow_dispatch:
+
+jobs:
+  notify-tasks:
+    runs-on: ubuntu-latest
+    env:
+      TZ: "UTC"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Notification Cron Job
+        run: node lib/jobs/notifyTasks.js
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
