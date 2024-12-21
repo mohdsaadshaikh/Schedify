@@ -10,12 +10,14 @@ import {
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { useCurrentUser } from "@/hooks/useCurrentUse";
 import { logout } from "@/lib/actions/auth.action";
-import { EditIcon, LogOutIcon, User } from "lucide-react";
+import { BellIcon, EditIcon, LogOutIcon, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaUser } from "react-icons/fa";
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "./ui/button";
+import { NotificationList } from "./notification-ui/notification-list";
 export const Navbar = () => {
   const user = useCurrentUser();
   const router = useRouter();
@@ -25,51 +27,33 @@ export const Navbar = () => {
       toast.success("Logged out successfully!");
     });
   };
+
   return (
     <nav className="h-[10vh] w-screen flex justify-between items-center px-10 shadow dark:shadow-gray-800">
       <Logo />
-      <div className="flex gap-6 items-center">
-        <ToggleTheme />
-        {/* <Popover>
+      <div className="flex gap-4 items-center">
+        <Popover>
           <PopoverTrigger asChild>
-            <Avatar size="sm" fallback={<AvatarFallback />}>
-              <AvatarImage src={user?.image || null} alt="User avatar" />
-              <AvatarFallback className="bg-[#53ab8b]">
-                <FaUser className="text-white" />
-              </AvatarFallback>
-            </Avatar>
+            <Button variant="outline" size="icon" className="relative">
+              <BellIcon />
+              {/* {notifications.length > 0 && (
+                <span className="absolute top-2 right-2 block h-2 w-2 rounded-full bg-red-500"></span>
+              )} */}
+            </Button>
           </PopoverTrigger>
-          <PopoverContent className="border border-black dark:border-white shadow-md">
-            <div className="flex gap-4 flex-col">
-              <div className="flex flex-col gap-2 items-center">
-                <Avatar size="sm" fallback={<AvatarFallback />}>
-                  <AvatarImage src={user?.image || null} alt="User avatar" />
-                  <AvatarFallback className="bg-[#53ab8b]">
-                    <FaUser className="text-white" />
-                  </AvatarFallback>
-                </Avatar>
-                <p className="text-lg font-semibold">{user?.name}</p>
-              </div>
-              <div className="flex justify-between">
-                <Link href="/profile/edit">
-                  <span className="cursor-pointer text-sm py-2 px-4 rounded-full underline">
-                    Edit Profile
-                  </span>
-                </Link>
-                <span
-                  className="cursor-pointer flex gap-3"
-                  onClick={handleLogout}
-                >
-                  <LogOutIcon />
-                  Logout
-                </span>
-              </div>
-            </div>
+          <PopoverContent className="p-0">
+            <NotificationList />
           </PopoverContent>
-        </Popover> */}
+        </Popover>
+        <ToggleTheme />
+
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Avatar size="sm" fallback={<AvatarFallback />}>
+            <Avatar
+              size="sm"
+              className="rounded-md"
+              fallback={<AvatarFallback />}
+            >
               <AvatarImage src={user?.image || null} alt="User avatar" />
               <AvatarFallback className="bg-[#53ab8b]">
                 <FaUser className="text-white" />

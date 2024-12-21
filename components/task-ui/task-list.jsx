@@ -14,7 +14,6 @@ import { EditTask } from "./edit-task";
 import { Skeleton } from "../ui/skeleton";
 
 export const TasksList = ({ date }) => {
-  console.log(date);
   const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
