@@ -14,6 +14,9 @@ import { inter } from "@/lib/fonts";
 import { signIn } from "next-auth/react";
 import { DEFAULT_REDIRECT } from "@/lib/routes";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { TriangleAlert } from "lucide-react";
 
 export const FormWrapper = ({
   headerLabel,
@@ -28,13 +31,18 @@ export const FormWrapper = ({
       callbackUrl: DEFAULT_REDIRECT,
     })
       .then(() => {
-        if (provider === "github") toast.success("Continuing to github");
-        else toast.success("Continuing to Google");
+        if (provider === "github") toast.info("Continuing to github...");
+        else toast.info("Continuing to Google...");
       })
       .catch(() => {
         toast.error("An unexpected error occurred");
       });
   };
+  const searchParams = useSearchParams();
+  const urlErr =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email linked with another provider. Plz use the correct one."
+      : "";
   return (
     <Card
       className={`${inter.className} w-[400px] shadow flex flex-col bg-[#F4F6F8] dark:bg-[#0F1117]`}
@@ -48,6 +56,17 @@ export const FormWrapper = ({
           <Image alt="Schedify" src="/assets/logo.png" width="50" height="50" />
         </div>
       </CardHeader>
+      {urlErr && (
+        <Alert variant="destructive" className="w-[350px] h-full mx-auto">
+          <div className="flex items-center gap-2">
+            <TriangleAlert className="w-12 h-12" />
+            <div className="">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{urlErr}</AlertDescription>
+            </div>
+          </div>
+        </Alert>
+      )}
       <CardContent>{children}</CardContent>
       <CardFooter className="flex flex-col gap-2">
         <Link href={backButtonLink}>

@@ -12,14 +12,17 @@ import {
 } from "../ui/dialog";
 import { EditTask } from "./edit-task";
 import { Skeleton } from "../ui/skeleton";
+import { useTransition } from "react";
 
 export const TasksList = ({ date }) => {
   const [tasks, setTasks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
+  const [skeletonCount, setSkeletonCount] = useState(
+    Math.floor(Math.random() * 4) + 1
+  );
 
-  useEffect(() => {
-    const fetchTasks = () => {
-      setIsLoading(true);
+  const fetchTasks = () => {
+    startTransition(() => {
       getTasksByDate(date)
         .then((res) => {
           if (res.error) {
@@ -32,44 +35,50 @@ export const TasksList = ({ date }) => {
         .catch((err) => {
           console.error("Error in fetching tasks:", err);
           setTasks([]);
-        })
-        .finally(() => {
-          setIsLoading(false);
         });
-    };
+    });
+  };
+  useEffect(() => {
     fetchTasks();
   }, [date]);
 
-  const skeletonCount = Math.floor(Math.random() * 4) + 1;
+  // const skeletonCount = Math.floor(Math.random() * 4) + 1;
+  if (isPending && skeletonCount === 0) {
+    setSkeletonCount(Math.floor(Math.random() * 4) + 1);
+  }
+
+  console.log(tasks);
 
   return (
     <ul>
-      {isLoading
+      {isPending
         ? Array.from({ length: skeletonCount }).map((_, i) => (
             <Skeleton key={i} className="h-4 w-full p-4 mb-4" />
           ))
         : tasks.length > 0 && (
             <div className="my-4 space-y-3">
-              {tasks.map((task) => (
-                <li
-                  key={task.id}
-                  className="cursor-pointer p-2 border rounded-md transition-all duration-300 ease-in-out hover:bg-gradient-to-r from-slate-50 to-gray-300 dark:hover:bg-gradient-to-r dark:from-zinc-600 dark:to-zinc-900 bg-size-200 bg-pos-0 hover:bg-pos-100"
-                >
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <div className={task?.completed && "line-through"}>
-                        {task.title}
-                      </div>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Edit Task</DialogTitle>
-                      </DialogHeader>
-                      <EditTask task={task} />
-                    </DialogContent>
-                  </Dialog>
-                </li>
-              ))}
+              {tasks.map((task) => {
+                return (
+                  <li
+                    key={task.id}
+                    className={`cursor-pointer p-2 border-purple-300  ${``} rounded-md transition-all duration-300 ease-in-out hover:bg-gradient-to-r from-slate-50 to-gray-300 dark:hover:bg-gradient-to-r dark:from-zinc-600 dark:to-zinc-900 bg-size-200 bg-pos-0 hover:bg-pos-100`}
+                  >
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <div className={task?.completed && "line-through"}>
+                          {task.title}
+                        </div>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Edit Task</DialogTitle>
+                        </DialogHeader>
+                        <EditTask task={task} fetchTasks={fetchTasks} />
+                      </DialogContent>
+                    </Dialog>
+                  </li>
+                );
+              })}
             </div>
           )}
     </ul>
@@ -99,11 +108,11 @@ export const TasksList = ({ date }) => {
 
 // export const TasksList = ({ date }) => {
 //   const [tasks, setTasks] = useState([]);
-//   const [isLoading, setIsLoading] = useState(true);
+//   const [isPending, setisPending] = useState(true);
 
 //   useEffect(() => {
 //     const fetchTasks = async () => {
-//       setIsLoading(true);
+//       setisPending(true);
 //       try {
 //         const res = await getTasksByDate(date);
 //         if (res.error) {
@@ -116,7 +125,7 @@ export const TasksList = ({ date }) => {
 //         console.error("Error:", error);
 //         setTasks([]);
 //       } finally {
-//         setIsLoading(false);
+//         setisPending(false);
 //       }
 //     };
 
@@ -149,7 +158,7 @@ export const TasksList = ({ date }) => {
 
 //   return (
 //     <div>
-//       {isLoading ? (
+//       {isPending ? (
 //         Array.from({ length: skeletonCount }).map((_, i) => (
 //           <Skeleton key={i} className="h-4 w-full p-4 mb-4" />
 //         ))

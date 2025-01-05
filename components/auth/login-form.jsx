@@ -1,17 +1,6 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { loginSchema } from "@/schemas/auth.schema";
-import { login } from "@/lib/actions/auth.action";
-import { toast } from "sonner";
-import { DEFAULT_REDIRECT } from "@/lib/routes";
-import PasswordInput from "@/components/ui/password-input";
 import { FormWrapper } from "@/components/auth/form-wrapper";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -20,21 +9,24 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { AlertCircle } from "lucide-react";
+import PasswordInput from "@/components/ui/password-input";
+import { login } from "@/lib/actions/auth.action";
+import { DEFAULT_REDIRECT } from "@/lib/routes";
+import { loginSchema } from "@/schemas/auth.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export const LoginForm = () => {
-  const searchParams = useSearchParams();
-  const urlErr =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email Already in use by different provider"
-      : "";
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -81,13 +73,6 @@ export const LoginForm = () => {
       backButtonLink="/register"
       providers={!show2fa}
     >
-      {urlErr && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{urlErr}</AlertDescription>
-        </Alert>
-      )}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

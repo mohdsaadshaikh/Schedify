@@ -3,16 +3,13 @@ import { deleteTask } from "@/lib/actions/task.action";
 import { Button } from "../ui/button";
 import { CloseDialog } from "../ui/dialog";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
-export const DeleteTask = ({ taskId }) => {
-  const router = useRouter();
+export const DeleteTask = ({ taskId, fetchTasks }) => {
   const handleDeleteTask = async () => {
     try {
       await deleteTask(taskId);
       toast.success("Task deleted successfully");
-      router.push("/profile");
-      router.push("/");
+      fetchTasks();
     } catch (error) {
       console.log(error);
       toast.error("Failed to delete task");
@@ -26,15 +23,13 @@ export const DeleteTask = ({ taskId }) => {
         <CloseDialog asChild>
           <Button className="w-1/4">No</Button>
         </CloseDialog>
-        <CloseDialog asChild>
-          <Button
-            className="w-1/4"
-            variant="destructive"
-            onClick={() => handleDeleteTask()}
-          >
-            Yes
-          </Button>
-        </CloseDialog>
+        <Button
+          className="w-1/4"
+          variant="destructive"
+          onClick={() => handleDeleteTask()}
+        >
+          Yes
+        </Button>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-import React from "react";
 import { WeekDaysOverview } from "@/components/task-ui/week-days-overview";
 
 const HomePage = () => {

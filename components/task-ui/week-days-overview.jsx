@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // Lucide React Icons
-import { outfit } from "@/lib/fonts";
+import React, { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -56,8 +55,26 @@ export const WeekDaysOverview = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "ArrowLeft") {
+        handlePreviousWeek();
+      }
+      if (e.key === "ArrowRight") {
+        handleNextWeek();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    // Cleanup on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [currentDate]);
+
   return (
-    <div className={`${outfit.className} p-6`}>
+    <div className="p-6">
       <header className="flex justify-between items-center mb-8 mt-2">
         <h1 className="text-3xl font-bold text-[#53ab8b]">
           {currentDate.toLocaleString("en", { month: "long", year: "numeric" })}

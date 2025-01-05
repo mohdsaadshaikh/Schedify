@@ -18,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { editTask } from "@/lib/actions/task.action";
-import { outfit } from "@/lib/fonts";
 import { editTaskSchema } from "@/schemas/task.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Priority, Recurrence } from "@prisma/client";
@@ -27,7 +26,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Checkbox } from "../ui/checkbox";
 import {
-  CloseDialog,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -37,8 +35,9 @@ import {
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { DeleteTask } from "./delete-task";
+import { revalidatePath } from "next/cache";
 
-export const EditTask = ({ task }) => {
+export const EditTask = ({ task, fetchTasks }) => {
   const form = useForm({
     resolver: zodResolver(editTaskSchema),
     defaultValues: {
@@ -77,22 +76,21 @@ export const EditTask = ({ task }) => {
         .then((res) => {
           if (res?.success) {
             toast.success(res.success);
+            // fetchTasks();
           } else if (res?.error) {
             toast.error(res.error);
           }
         })
-        .catch((error) => {
-          toast.error("Failed to create task.");
+        .catch((err) => {
+          console.log(err);
+          toast.error("Failed to edit task.");
         });
     });
   };
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(HandleEditTask)}
-        className={`${outfit.className} space-y-4`}
-      >
+      <form onSubmit={form.handleSubmit(HandleEditTask)} className="space-y-4">
         <FormField
           control={form.control}
           name="title"
@@ -275,14 +273,12 @@ export const EditTask = ({ task }) => {
               <DialogHeader>
                 <DialogTitle>Delete Task</DialogTitle>
               </DialogHeader>
-              <DeleteTask taskId={task.id} />
+              <DeleteTask taskId={task.id} fetchTasks={fetchTasks} />
             </DialogContent>
           </Dialog>
-          <CloseDialog asChild>
-            <Button type="submit" disabled={isPending}>
-              Edit Task
-            </Button>
-          </CloseDialog>
+          <Button type="submit" disabled={isPending}>
+            Edit Task
+          </Button>
         </div>
       </form>
     </Form>

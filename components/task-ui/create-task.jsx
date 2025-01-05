@@ -18,15 +18,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createTask } from "@/lib/actions/task.action";
-import { outfit } from "@/lib/fonts";
 import { createTaskSchema } from "@/schemas/task.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Priority, Recurrence } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CloseDialog } from "../ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export const CreateTask = ({ selectedDate }) => {
   const form = useForm({
@@ -45,6 +45,8 @@ export const CreateTask = ({ selectedDate }) => {
 
   const [isPending, startTransition] = useTransition();
 
+  const router = useRouter();
+
   const HandleCreateTask = (values) => {
     startTransition(() => {
       createTask({
@@ -53,6 +55,7 @@ export const CreateTask = ({ selectedDate }) => {
       })
         .then((res) => {
           if (res?.success) {
+            router.refresh("/");
             toast.success(res.success);
           } else if (res?.error) {
             console.log(res.error);
@@ -70,7 +73,7 @@ export const CreateTask = ({ selectedDate }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(HandleCreateTask)}
-        className={`${outfit.className} space-y-4`}
+        className="space-y-4"
       >
         <FormField
           control={form.control}
