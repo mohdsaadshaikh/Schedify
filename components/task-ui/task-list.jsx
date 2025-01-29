@@ -40,7 +40,7 @@ export const TasksList = ({ date }) => {
   };
   useEffect(() => {
     fetchTasks();
-  }, [date]);
+  });
 
   // const skeletonCount = Math.floor(Math.random() * 4) + 1;
   if (isPending && skeletonCount === 0) {

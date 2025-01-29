@@ -1,8 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-(async () => {
+export async function GET() {
   console.log("Cron job started at:", new Date());
 
   try {
@@ -48,7 +49,10 @@ const prisma = new PrismaClient();
     } else {
       console.log("No tasks to notify at this time.");
     }
+
+    return NextResponse.json({ success: true, message: "Cron job executed" });
   } catch (error) {
     console.error("Error creating notifications:", error);
+    return NextResponse.json({ success: false, error: error.message });
   }
-})();
+}

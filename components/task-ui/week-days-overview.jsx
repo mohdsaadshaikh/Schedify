@@ -71,7 +71,7 @@ export const WeekDaysOverview = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [currentDate]);
+  });
 
   return (
     <div className="p-6">
