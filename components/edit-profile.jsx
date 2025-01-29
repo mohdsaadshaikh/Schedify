@@ -128,11 +128,15 @@ export const EditProfile = () => {
             >
               {({ open }) => (
                 <Button variant="outline" onClick={() => open()}>
-                  {!user?.image ? "Add Photo" : "Change Photo"}
+                  {user?.image ? "Change Photo" : "Add Photo"}
                 </Button>
               )}
             </CldUploadWidget>
-            <Button variant="destructive" onClick={() => handleDeleteImage()}>
+            <Button
+              variant="destructive"
+              disabled={!user?.image}
+              onClick={() => handleDeleteImage()}
+            >
               Remove Photo
             </Button>
           </div>

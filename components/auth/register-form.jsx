@@ -34,7 +34,10 @@ export const RegisterForm = () => {
       register(values)
         .then((res) => {
           if (res?.success) {
-            toast.success("Accout successfully created");
+            toast.success(
+              "We’ve sent you a verification email! Please check your inbox to verify your account."
+            );
+
             router.push(DEFAULT_REDIRECT);
           } else if (res?.error) {
             toast.error(res.error);

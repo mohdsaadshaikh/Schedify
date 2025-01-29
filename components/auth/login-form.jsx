@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import {
   InputOTP,
   InputOTPGroup,
+  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import PasswordInput from "@/components/ui/password-input";
@@ -48,6 +49,7 @@ export const LoginForm = () => {
           } else if (res?.message) {
             toast.info(res.message);
           } else if (res?.error) {
+            form.reset();
             toast.error(res.error);
           }
         })
@@ -79,7 +81,7 @@ export const LoginForm = () => {
           className="space-y-4 w-[350px] mt-2"
         >
           <div className={`${show2fa && "mb-2"} space-y-4`}>
-            {show2fa ? (
+            {show2fa && (
               <FormField
                 control={form.control}
                 name="code"
@@ -102,7 +104,8 @@ export const LoginForm = () => {
                   </FormItem>
                 )}
               />
-            ) : (
+            )}
+            {!show2fa && (
               <>
                 <FormField
                   control={form.control}

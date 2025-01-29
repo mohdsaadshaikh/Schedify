@@ -47,8 +47,6 @@ export const TasksList = ({ date }) => {
     setSkeletonCount(Math.floor(Math.random() * 4) + 1);
   }
 
-  console.log(tasks);
-
   return (
     <ul>
       {isPending
@@ -61,7 +59,8 @@ export const TasksList = ({ date }) => {
                 return (
                   <li
                     key={task.id}
-                    className={`cursor-pointer p-2 border-purple-300  ${``} rounded-md transition-all duration-300 ease-in-out hover:bg-gradient-to-r from-slate-50 to-gray-300 dark:hover:bg-gradient-to-r dark:from-zinc-600 dark:to-zinc-900 bg-size-200 bg-pos-0 hover:bg-pos-100`}
+                    style={{ borderColor: task.color }}
+                    className="cursor-pointer p-2 border-2 rounded-md transition-all duration-300 ease-in-out hover:bg-gradient-to-r from-slate-50 to-gray-300 dark:hover:bg-gradient-to-r dark:from-zinc-600 dark:to-zinc-900 bg-size-200 bg-pos-0 hover:bg-pos-100"
                   >
                     <Dialog>
                       <DialogTrigger asChild>

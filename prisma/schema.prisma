@@ -95,7 +95,7 @@ model Task {
   endTime      DateTime       @db.Time()
   date         DateTime       @db.Date
   recurrence   Recurrence
-  color        String?
+  color        String?        @default("#262626")
   priority     Priority
   completed    Boolean        @default(false)
   userId       String
@@ -104,6 +104,7 @@ model Task {
   updatedAt    DateTime       @updatedAt
   Notification Notification[]
   isNotified   Boolean        @default(false)
+  notfiyMe     Boolean        @default(false)
 
   @@index([userId, startTime, endTime])
 }
