@@ -11,6 +11,7 @@ import {
 } from "../ui/dialog";
 import { CreateTask } from "./create-task";
 import { TasksList } from "./task-list";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export const WeekDaysOverview = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -110,9 +111,11 @@ export const WeekDaysOverview = () => {
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Create Task</DialogTitle>
-                  </DialogHeader>
+                  <VisuallyHidden>
+                    <DialogHeader>
+                      <DialogTitle>Create Task</DialogTitle>
+                    </DialogHeader>
+                  </VisuallyHidden>
                   <CreateTask selectedDate={selectedDate} />
                 </DialogContent>
               </Dialog>

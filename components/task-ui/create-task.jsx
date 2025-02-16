@@ -22,13 +22,17 @@ import { createTaskSchema } from "@/schemas/task.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Priority, Recurrence } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useId, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { CloseDialog } from "../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Checkbox } from "../ui/checkbox";
+import { BellRing } from "lucide-react";
+import { Label } from "../ui/label";
 
 export const CreateTask = ({ selectedDate }) => {
+  const id = useId();
   const form = useForm({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -225,6 +229,25 @@ export const CreateTask = ({ selectedDate }) => {
           </PopoverContent>
         </Popover>
 
+        <div className="relative flex w-full items-start gap-2 rounded-lg border border-input p-4 shadow-sm shadow-black/5 has-[[data-state=checked]]:border-ring">
+          <Checkbox
+            id={id}
+            className="order-1 after:absolute after:inset-0 data-[state=checked]:bg-emerald-500"
+            aria-describedby={`${id}-description`}
+          />
+          <div className="grid grow gap-2">
+            <Label htmlFor={id} className="flex items-center gap-2">
+              <BellRing className="h-4 w-4 text-[#53ab8b]" /> Notify me
+            </Label>
+            <p
+              id={`${id}-description`}
+              className="text-xs text-muted-foreground"
+            >
+              Receive a reminder before your scheduled task begins.
+            </p>
+          </div>
+        </div>
+
         <CloseDialog asChild>
           <Button
             type="submit"
@@ -238,11 +261,3 @@ export const CreateTask = ({ selectedDate }) => {
     </Form>
   );
 };
-
-// const fakeApiCall = (values) =>
-//   new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//       if (Math.random() > 0.2) resolve(values);
-//       else reject(new Error("API Error"));
-//     }, 2000);
-//   });

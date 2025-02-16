@@ -10,15 +10,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { EditTask } from "./edit-task";
+import { TaskActions } from "./task-actions";
 import { Skeleton } from "../ui/skeleton";
 import { useTransition } from "react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export const TasksList = ({ date }) => {
   const [tasks, setTasks] = useState([]);
   const [isPending, startTransition] = useTransition();
   const [skeletonCount, setSkeletonCount] = useState(
-    Math.floor(Math.random() * 4) + 1
+    // Math.floor(Math.random() * 4) +
+    1
   );
 
   const fetchTasks = () => {
@@ -40,17 +42,17 @@ export const TasksList = ({ date }) => {
   };
   useEffect(() => {
     fetchTasks();
-  });
+  }, [date]);
 
   // const skeletonCount = Math.floor(Math.random() * 4) + 1;
-  if (isPending && skeletonCount === 0) {
-    setSkeletonCount(Math.floor(Math.random() * 4) + 1);
-  }
+  // if (isPending && skeletonCount === 0) {
+  //   setSkeletonCount(Math.floor(Math.random() * 4) + 1);
+  // }
 
   return (
     <ul>
       {isPending
-        ? Array.from({ length: skeletonCount }).map((_, i) => (
+        ? Array.from({ length: 1 }).map((_, i) => (
             <Skeleton key={i} className="h-4 w-full p-4 mb-4" />
           ))
         : tasks.length > 0 && (
@@ -69,10 +71,12 @@ export const TasksList = ({ date }) => {
                         </div>
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[425px]">
+                        {/* <VisuallyHidden>
                         <DialogHeader>
                           <DialogTitle>Edit Task</DialogTitle>
                         </DialogHeader>
-                        <EditTask task={task} fetchTasks={fetchTasks} />
+                      </VisuallyHidden> */}
+                        <TaskActions task={task} fetchTasks={fetchTasks} />
                       </DialogContent>
                     </Dialog>
                   </li>

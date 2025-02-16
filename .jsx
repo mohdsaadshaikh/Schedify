@@ -21,7 +21,8 @@ import { editTask } from "@/lib/actions/task.action";
 import { editTaskSchema } from "@/schemas/task.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Priority, Recurrence } from "@prisma/client";
-import { useTransition } from "react";
+import { BellRing } from "lucide-react";
+import { useId, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Checkbox } from "../ui/checkbox";
@@ -35,9 +36,10 @@ import {
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { DeleteTask } from "./delete-task";
-import { revalidatePath } from "next/cache";
 
 export const EditTask = ({ task, fetchTasks }) => {
+  const id = useId();
+  // console.log(id);
   const form = useForm({
     resolver: zodResolver(editTaskSchema),
     defaultValues: {
@@ -240,6 +242,25 @@ export const EditTask = ({ task, fetchTasks }) => {
             />
           </PopoverContent>
         </Popover>
+
+        <div className="relative flex w-full items-start gap-2 rounded-lg border border-input p-4 shadow-sm shadow-black/5 has-[[data-state=checked]]:border-ring">
+          <Checkbox
+            id={id}
+            className="order-1 after:absolute after:inset-0 data-[state=checked]:bg-emerald-500"
+            aria-describedby={`${id}-description`}
+          />
+          <div className="grid grow gap-2">
+            <Label htmlFor={id} className="flex items-center gap-2">
+              <BellRing className="h-4 w-4 text-[#53ab8b]" /> Notify me
+            </Label>
+            <p
+              id={`${id}-description`}
+              className="text-xs text-muted-foreground"
+            >
+              Receive a reminder before your scheduled task begins.
+            </p>
+          </div>
+        </div>
 
         <FormField
           control={form.control}
