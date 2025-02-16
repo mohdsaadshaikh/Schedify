@@ -25,6 +25,7 @@ export const createTaskSchema = z
       },
     }),
     completed: z.boolean().optional().default(false),
+    notifyMe: z.boolean().optional(),
   })
   .refine(
     (data) => {
@@ -68,6 +69,7 @@ export const editTaskSchema = z
     }),
     color: z.string().optional(),
     completed: z.boolean().optional(),
+    notifyMe: z.boolean().optional(),
   })
   .refine(
     (data) => {

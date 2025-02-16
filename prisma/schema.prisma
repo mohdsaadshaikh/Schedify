@@ -104,7 +104,7 @@ model Task {
   updatedAt    DateTime       @updatedAt
   Notification Notification[]
   isNotified   Boolean        @default(false)
-  notfiyMe     Boolean        @default(false)
+  notifyMe     Boolean        @default(false)
 
   @@index([userId, startTime, endTime])
 }

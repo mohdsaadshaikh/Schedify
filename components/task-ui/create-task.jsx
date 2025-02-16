@@ -230,11 +230,6 @@ export const CreateTask = ({ selectedDate }) => {
         </Popover>
 
         <div className="relative flex w-full items-start gap-2 rounded-lg border border-input p-4 shadow-sm shadow-black/5 has-[[data-state=checked]]:border-ring">
-          <Checkbox
-            id={id}
-            className="order-1 after:absolute after:inset-0 data-[state=checked]:bg-emerald-500"
-            aria-describedby={`${id}-description`}
-          />
           <div className="grid grow gap-2">
             <Label htmlFor={id} className="flex items-center gap-2">
               <BellRing className="h-4 w-4 text-[#53ab8b]" /> Notify me
@@ -246,6 +241,24 @@ export const CreateTask = ({ selectedDate }) => {
               Receive a reminder before your scheduled task begins.
             </p>
           </div>
+          <FormField
+            control={form.control}
+            name="notifyMe"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Checkbox
+                    id={id}
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="order-1 after:absolute after:inset-0 data-[state=checked]:bg-emerald-500"
+                    aria-describedby={`${id}-description`}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <CloseDialog asChild>

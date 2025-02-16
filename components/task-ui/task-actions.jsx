@@ -65,7 +65,7 @@ export const TaskActions = ({ task, fetchTasks }) => {
       priority: task?.priority || undefined,
       date: new Date(task?.date),
       completed: task?.completed || false,
-      notfiyMe: task?.notfiyMe || false,
+      notifyMe: task?.notifyMe || false,
     },
   });
 
@@ -109,12 +109,12 @@ export const TaskActions = ({ task, fetchTasks }) => {
           <div className="flex items-center gap-2">
             <FormField
               control={form.control}
-              name="notify"
+              name="notifyMe"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <BellRing
-                      className={`h-8 w-8 border p-2 rounded-md ${
+                      className={`h-8 w-8 border p-2 rounded-md cursor-pointer ${
                         field.value
                           ? "text-gray-200 bg-[#53ab8b] "
                           : "text-[#53ab8b] border-[#53ab8b]"
