@@ -317,9 +317,11 @@ export const TaskActions = ({ task, fetchTasks }) => {
             />
           </div>
         </div>
-        <Button type="submit" disabled={isPending}>
-          Edit Task
-        </Button>
+        <div className="w-full flex justify-end gap ">
+          <Button type="submit" className="btn-gradient" disabled={isPending}>
+            Save Changes
+          </Button>
+        </div>
       </form>
     </Form>
   );

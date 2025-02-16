@@ -72,12 +72,23 @@ body {
 }
 
 .btn-gradient {
-  @apply bg-gradient-to-r from-[#157759] via-[#157759] to-[#53ab8b] 
-         hover:bg-gradient-to-r hover:from-[#53ab8b] hover:via-[#157759] hover:to-[#157759] 
-         text-white py-2 px-4 rounded-lg 
-         transition-all duration-300 ease-in-out;
+  @apply text-white py-2 px-4 rounded-md relative;
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+  background-image: linear-gradient(
+    to right,
+    #157759 0%,
+    #157759 33%,
+    #53ab8b 66%,
+    #82dbb8 100%
+  );
+  transition: background-position 0.3s ease-in-out;
 }
 
+.btn-gradient:hover {
+  background-position: 100% 0%;
+  color: #000;
+}
 .gradient-color {
   @apply bg-gradient-to-b from-[#157759] via-[#157759] to-[#53ab8b];
 }
