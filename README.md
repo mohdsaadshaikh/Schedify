@@ -65,12 +65,9 @@ Make sure you have the following installed on your machine:
    - Create a `.env` file in root directory and add these variables as shown below.
    - Want env file? contact me on [Muhammad Saad Shaikh](mailto:mohammadsaad925s4s@gmail.com). or whatsapp [Message me on WhatsApp](https://wa.me/923192340879)
 
-     ```plaintext
-     NODE_ENV=development
-     ```
-
+```plaintext
+NODE_ENV=development
 AUTH_SECRET="your_auth_secret"
-
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 GITHUB_CLIENT_ID=your_github_client_id
@@ -95,6 +92,7 @@ FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
 FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
 FIREBASE_APP_ID=your_firebase_app_id
 FIREBASE_MEASUREMENT_ID=your_firebase_measurement_id
+```
 
 Then, run the development server:
 
