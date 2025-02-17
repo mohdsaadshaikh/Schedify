@@ -26,6 +26,7 @@ export async function GET() {
           lte: `${currentDate}T${futureTimeString}Z`,
         },
         isNotified: false,
+        notifyMe: true,
         completed: false,
       },
     });
