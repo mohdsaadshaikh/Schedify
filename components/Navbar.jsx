@@ -30,7 +30,9 @@ export const Navbar = () => {
 
   return (
     <nav className="h-[10vh] w-screen flex justify-between items-center px-10 shadow dark:shadow-gray-800">
-      <Logo />
+      <Link href="/">
+        <Logo logoSize="45px" />
+      </Link>
       <div className="flex gap-4 items-center">
         <Popover>
           <PopoverTrigger asChild>

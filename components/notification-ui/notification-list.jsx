@@ -41,7 +41,7 @@ export const NotificationList = () => {
     <ScrollArea className="h-72 rounded-md border">
       {loading ? (
         <div className="h-72 flex justify-center items-center">
-          <Loader />
+          <Loader size="60px" />
         </div>
       ) : notifications.length > 0 ? (
         notifications.map((notification) => (
