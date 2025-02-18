@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,6 @@ import {
 } from "../ui/dialog";
 import { CreateTask } from "./create-task";
 import { TasksList } from "./task-list";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export const WeekDaysOverview = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -98,7 +97,7 @@ export const WeekDaysOverview = () => {
                 className={`${
                   today === day.fullDate &&
                   "text-[#53ab8b] border-b-4 border-[#53ab8b]"
-                } py-2 min-w-[120px] border-b-2 flex justify-between cursor-pointer mb-4`}
+                } py-2 min-w-[120px] border-b-2 flex justify-between select-none mb-4`}
               >
                 <div className="text-xl font-semibold">{day.date}</div>
                 <div className="text-gray-500 text-lg">{day.dayName}</div>
@@ -111,11 +110,9 @@ export const WeekDaysOverview = () => {
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
-                  <VisuallyHidden>
-                    <DialogHeader>
-                      <DialogTitle>Create Task</DialogTitle>
-                    </DialogHeader>
-                  </VisuallyHidden>
+                  <DialogHeader className="hidden">
+                    <DialogTitle>Create Task</DialogTitle>
+                  </DialogHeader>
                   <CreateTask selectedDate={selectedDate} />
                 </DialogContent>
               </Dialog>

@@ -3,6 +3,7 @@
 import { getTasksByDate } from "@/lib/actions/task.action";
 import { useEffect, useState } from "react";
 
+import { useTransition } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,10 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { TaskActions } from "./task-actions";
 import { Skeleton } from "../ui/skeleton";
-import { useTransition } from "react";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { TaskActions } from "./task-actions";
 
 export const TasksList = ({ date }) => {
   const [tasks, setTasks] = useState([]);
@@ -71,11 +70,9 @@ export const TasksList = ({ date }) => {
                         </div>
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[425px]">
-                        {/* <VisuallyHidden>
-                        <DialogHeader>
+                        <DialogHeader className="hidden">
                           <DialogTitle>Edit Task</DialogTitle>
                         </DialogHeader>
-                      </VisuallyHidden> */}
                         <TaskActions task={task} fetchTasks={fetchTasks} />
                       </DialogContent>
                     </Dialog>
