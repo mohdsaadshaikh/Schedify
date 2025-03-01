@@ -15,6 +15,12 @@ import { Skeleton } from "../ui/skeleton";
 import { TaskActions } from "./task-actions";
 
 export const TasksList = ({ date }) => {
+  async function getTasks() {
+    const res = await fetch(`http://localhost:3000/api/tasks?date=${date}`);
+    const data = await res.json();
+    console.log("data", data);
+    return data;
+  }
   const [tasks, setTasks] = useState([]);
   const [isPending, startTransition] = useTransition();
   const [skeletonCount, setSkeletonCount] = useState(
@@ -24,14 +30,15 @@ export const TasksList = ({ date }) => {
 
   const fetchTasks = () => {
     startTransition(() => {
-      getTasksByDate(date)
+      // getTasksByDate(date)
+      getTasks()
         .then((res) => {
-          if (res.error) {
-            console.error("Error:", res.error);
-            setTasks([]);
-          } else {
-            setTasks(res);
-          }
+          // if (res.error) {
+          //   console.error("Error:", res.error);
+          //   setTasks([]);
+          // } else {
+          setTasks(res);
+          // }
         })
         .catch((err) => {
           console.error("Error in fetching tasks:", err);
@@ -54,7 +61,7 @@ export const TasksList = ({ date }) => {
         ? Array.from({ length: 1 }).map((_, i) => (
             <Skeleton key={i} className="h-4 w-full p-4 mb-4" />
           ))
-        : tasks.length > 0 && (
+        : tasks?.length > 0 && (
             <div className="my-4 space-y-3">
               {tasks.map((task) => {
                 return (
