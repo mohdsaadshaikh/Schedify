@@ -3,7 +3,6 @@ import { currentUser } from "@/lib/serverHooks";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
-  console.log("Headers received:", req.headers);
   try {
     const { searchParams } = new URL(req.url);
     const date = searchParams.get("date");

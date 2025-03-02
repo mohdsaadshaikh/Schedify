@@ -18,7 +18,6 @@ export const TasksList = ({ date }) => {
   async function getTasks() {
     const res = await fetch(`http://localhost:3000/api/tasks?date=${date}`);
     const data = await res.json();
-    console.log("data", data);
     return data;
   }
   const [tasks, setTasks] = useState([]);
@@ -30,15 +29,15 @@ export const TasksList = ({ date }) => {
 
   const fetchTasks = () => {
     startTransition(() => {
-      // getTasksByDate(date)
-      getTasks()
+      getTasksByDate(date)
+        // getTasks()
         .then((res) => {
-          // if (res.error) {
-          //   console.error("Error:", res.error);
-          //   setTasks([]);
-          // } else {
-          setTasks(res);
-          // }
+          if (res.error) {
+            console.error("Error:", res.error);
+            setTasks([]);
+          } else {
+            setTasks(res);
+          }
         })
         .catch((err) => {
           console.error("Error in fetching tasks:", err);

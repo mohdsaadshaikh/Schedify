@@ -64,14 +64,6 @@ export const Navbar = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-30" align="end">
             <DropdownMenuItem>
-              <Link href="/profile">
-                <span className="flex gap-3 cursor-pointer">
-                  <User />
-                  Profile
-                </span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
               <Link href="/profile/edit">
                 <span className="flex gap-3 cursor-pointer">
                   <EditIcon /> Edit Profile
