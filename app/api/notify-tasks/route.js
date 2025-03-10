@@ -29,6 +29,8 @@ export async function GET() {
       },
     });
 
+    console.log(tasksToNotify);
+
     if (tasksToNotify.length) {
       const notifications = tasksToNotify.map((task) => ({
         taskId: task.id,

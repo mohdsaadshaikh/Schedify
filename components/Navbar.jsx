@@ -29,7 +29,7 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="h-[10vh] w-screen flex justify-between items-center px-10 shadow dark:shadow-gray-800">
+    <nav className="h-[10vh] w-screen flex justify-between items-center px-8 max-md:px-5 shadow dark:shadow-gray-800">
       <Link href="/">
         <Logo logoSize="45px" />
       </Link>
